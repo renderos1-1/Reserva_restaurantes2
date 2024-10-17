@@ -1,0 +1,129 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    height: 100vh;
+    text-align: left;
+    background-color: #f6f6f6;
+}
+
+h2{
+    font-size: 200%;
+}
+
+.form {
+    width: 50%; /* Ajustar el ancho del formulario */
+    max-width: 800px; /* Limitar el ancho máximo */
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+img {
+    width: 50%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.header h2 {
+    margin: 0;
+    text-align: center;
+}
+
+.login form {
+    list-style-type: none;
+    padding: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.login input[type="email"],
+.login input[type="password"] {
+    width: 160%; /* Ensanchar los cuadros de entrada */
+    padding: 15px; /* Aumentar el padding */
+    margin: 10px 0;
+    border: 2px solid #000;
+    border-radius: 0;
+    box-sizing: border-box;
+}
+
+.login input[type="submit"] {
+    width: 95%; /* Ensanchar el botón de iniciar sesión */
+    padding: 15px; /* Aumentar el padding */
+    margin: 10px 0;
+    border: none;
+    border-radius: 20px;
+    background-color: orange;
+    color: white;
+    cursor: pointer;
+}
+
+.span {
+    display: flex;
+    justify-content: space-between;
+    width: 95%; /* Ajustar el ancho del contenedor */
+    margin: 0 auto;
+}
+
+.span .ch {
+    display: flex;
+    align-items: center;
+}
+
+.sign {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.sign .cuenta,
+.sign .reg {
+    margin: 5px 0;
+}
+
+/* Importar las fuentes */
+@import url('https://fonts.googleapis.com/css2?family=Inknut+Antiqua:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Italianno&display=swap');
+
+/* Estilos para el header */
+header {
+    display: flex;
+    justify-content: flex-start; /* Alinear elementos al inicio horizontalmente */
+    width: 20%;
+    padding: 6px; /* Añadir padding para separación */
+    box-sizing: border-box;
+    position: absolute; /* Posicionar el header en la parte superior */
+    top: 0;
+    left: 0;
+}
+
+header img {
+    margin-right: 10px; /* Espacio entre la imagen y el título */
+}
+
+.title {
+    font-family: 'Inknut Antiqua', serif; /* Aplicar la fuente al título */
+    margin: 0; /* Eliminar cualquier margen */
+    white-space: nowrap;
+    margin-top: 22px;
+}
+
+@media (max-width: 768px) {
+    .title {
+        font-size: 0.8em; /* Reducir el tamaño de la fuente en pantallas más pequeñas */
+    }
+    .form {
+        width: 90%; /* Ajustar el ancho del formulario en pantallas más pequeñas */
+    }
+
+    .login input[type="email"],
+    .login input[type="password"],
+    .login input[type="submit"],
+    .span {
+        width: 100%; /* Ajustar el ancho de los elementos en pantallas más pequeñas */
+    }
+}
