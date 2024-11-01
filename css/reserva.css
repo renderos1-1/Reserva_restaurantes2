@@ -1,0 +1,360 @@
+/* General Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+/* Navbar */
+.navbar {
+    background-color: #1c1c1c;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+nav{
+    display: flex;
+    align-items: center;
+}
+
+.navbar .logo {
+    font-size: 28px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.navbar ul {
+    list-style: none;
+    display: flex;
+    gap: 30px;
+    margin-right: 20px;
+}
+
+.navbar ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    transition: color 0.3s;
+}
+
+.navbar ul li a:hover {
+    color: #e74c3c;
+}
+
+nav .bell img {
+    width: 25px;
+    height: 25px;
+}
+
+nav .bell {
+    position: relative;
+}
+
+nav .bell img {
+    width: 25px;
+    height: 25px;
+    transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+nav .bell img:hover {
+    transform: scale(1.2); /* Aumenta el tamaño ligeramente */
+    filter: brightness(1.5); /* Hace que la imagen sea un poco más brillante */
+}
+
+/* Hero Section */
+.hero{
+    background-image: linear-gradient(to left, rgba(0,0,0,0.5), rgba(0, 0, 0, 0.6)), url('../img/fondo_reserva_tu_mesa.jpg');
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+    color: white;
+    padding: 120px 20px;
+    text-align: center;
+    box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.7);
+}
+
+.hero h1 {
+    font-size: 48px;
+    margin-bottom: 10px;
+    font-weight: bold;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+}
+
+.hero p {
+    font-size: 24px;
+    margin-top: 10px;
+}
+
+/* Reservation Form */
+.reservation-form {
+    display: flex;
+    justify-content: center;
+    padding: 50px 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    margin: -30px 20px 50px;
+}
+
+.form-container {
+    width: 100%;
+    max-width: 400px;
+}
+
+.form-container h2 {
+    margin-bottom: 20px;
+    font-size: 28px;
+    text-align: center;
+    color: #333;
+}
+
+.input-field {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    transition: border 0.3s;
+}
+
+.input-field:focus {
+    border-color: #e74c3c;
+}
+
+.guest-control {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px 0;
+}
+
+
+.guest-control button {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s;
+}
+.guest-control input {
+    text-align: center;
+    width: 60px;
+    padding: 8px;
+    margin: 0 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 18px;
+}
+
+.guest-control button:hover {
+    background-color: #c0392b;
+}
+
+.reserve-button {
+    background-color: #27ae60;
+    color: white;
+    border: none;
+    padding: 15px;
+    width: 100%;
+    font-size: 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background 0.3s;
+}
+
+.reserve-button:hover {
+    background-color: #2ecc71;
+}
+
+/* Estilos para el modal */
+.modal {
+    display: none; /* Oculto por defecto */
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5); /* Fondo oscuro */
+}
+
+.modal-content {
+    background-color: white;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 400px;
+    text-align: center;
+    border-radius: 10px;
+}
+
+.modal-title {
+    color: #ff5733;
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+.close:hover,
+.close:focus {
+    color: black;
+    cursor: pointer;
+}
+
+
+.notification {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background-color: red;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 50%;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+#resumen-reserva {
+    background-color: #e8f5e9;
+    border: 1px solid #27ae60;
+    border-radius: 5px;
+    padding: 20px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+#resumen-reserva h3 {
+    color: #27ae60;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.resumen-content {
+    line-height: 1.6;
+}
+
+.resumen-content p {
+    margin: 8px 0;
+}
+
+.resumen-content strong {
+    color: #2c3e50;
+}
+
+
+/* Estilo para el mensaje de confirmación */
+.mensaje {
+    margin-top: 20px;
+    font-size: 18px;
+    color: #333;
+    background-color: #e6f9e6;
+    padding: 15px;
+    border: 1px solid #5cb85c;
+    border-radius: 5px;
+    display: none; /* Se oculta inicialmente */
+    text-align: center;
+}
+
+.mensaje-error {
+    background-color: #f9e6e6;
+    border-color: #d9534f;
+}
+
+.modal-content button:disabled {
+    background-color: #cccccc !important;
+    cursor: not-allowed;
+}
+
+#popup {
+    transition: all 0.3s ease-in-out;
+}
+
+#confirmarBtn, #cancelarBtn {
+    margin: 5px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#confirmarBtn {
+    background-color: #27ae60;
+    color: white;
+}
+
+#cancelarBtn {
+    background-color: #e74c3c;
+    color: white;
+}
+
+
+#resumen-reserva {
+    display: none;
+    margin-top: 20px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 5px;
+    border: 2px solid #007bff;
+}
+
+#resumen-reserva h3 {
+    color: #27ae60;
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+#resumen-detalles {
+    line-height: 1.6;
+}
+
+.input-field[type="tel"] {
+    font-size: 16px;
+    padding: 12px;
+}
+
+/* Footer */
+footer {
+    background-color: #1c1c1c;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    position: relative;
+    bottom: 0;
+    font-size: 14px;
+}
+
+
+/* Responsive */
+@media (max-width: 768px) {
+    .hero h1 {
+        font-size: 36px;
+    }
+
+    .hero p {
+        font-size: 18px;
+    }
+
+    .form-container {
+        max-width: 90%;
+    }
+}

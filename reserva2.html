@@ -1,0 +1,79 @@
+<!-- Update CSS and JS paths to match the '/css' and '/js' routes we set up
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reserva tu mesa - Restaurante Elegante</title>
+    Update CSS path to match the '/css' route we set up
+    <link rel="stylesheet" href="/css/reserva.css">
+</head>
+<body>
+    <header>
+        <div class="navbar">
+            <div class="logo">Parrilladas</div>
+            <nav>
+                <ul>
+                    <li><a href="reserva.html">Nueva Reserva</a></li>
+                    <li><a href="historial.html">Historial</a></li>
+                    <li><a href="#" onclick="logout()">Cerrar sesión</a></li>
+                </ul>
+                <div class="bell">
+                    <img src="/img/campana.png" alt="Notificaciones">
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <h1>Reserva tu mesa</h1>
+        <p>Disfruta de una experiencia culinaria inolvidable.</p>
+    </section>
+
+    <section class="reservation-form">
+        <div class="form-container">
+            <h2>Haz tu reserva</h2>
+
+            <label for="comensales">Número de comensales (incluyendo al que hace la reserva)</label>
+            <div class="guest-control">
+                <button type="button" onclick="changeGuests(-1)" class="guest-button">-</button>
+                <input type="number" id="cantidadComensales" value="1" min="1" max="10" readonly>
+                <button type="button" onclick="changeGuests(1)" class="guest-button">+</button>
+            </div>
+
+            <label for="fecha">Fecha de la reserva</label>
+            <input type="date" id="fecha" class="input-field" required>
+
+            <label for="hora">Hora de ingreso</label>
+            <input type="time" id="hora" class="input-field">
+
+            <label for="telefono">Teléfono</label>
+            <input type="tel" id="telefono" class="input-field" placeholder="Ingresa tu teléfono" maxlength="8">
+
+            <button class="reserve-button" onclick="confirmarReserva()">Reservar ahora</button>
+
+            <button onclick="window.location.href='/confirmation.html'" class="reserve-button" style="margin-top: 10px;">
+                Ir a Confirmación Directamente
+            </button>
+
+            <!-- Resumen de la reserva (inicialmente oculto)
+            <div id="resumen-reserva" style="display: none; margin-top: 20px; padding: 20px; background: #f8f9fa; border-radius: 5px;">
+                <h3>Resumen de tu reserva</h3>
+                <p id="resumen-detalles"></p>
+            </div>
+        </div>
+        <input type="hidden" id="idCliente" value="1">
+    </section>
+
+
+    <footer>
+        <p>© 2024  - Todos los derechos reservados</p>
+    </footer>
+
+    <script src="/js/reserva.js"></script>
+
+</body>
+</html>
+
+
+-->

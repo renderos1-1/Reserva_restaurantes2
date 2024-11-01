@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="css/login.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>login</title>
+
+</head>
+<body>
+<header>
+    <img src="css/imgcss/logo1.png" alt="b">
+    <h3 class="title">¡Tus reservas más fácil que nunca!</h3>
+</header>
+<div class="form">
+    <div class="header">
+        <h2>¡Bienvenido de vuelta!</h2>
+        <br>
+        <br>
+    </div>
+    <div class="login">
+        <!-- Added id="loginForm" and removed method/action -->
+        <form id="loginForm">
+            <!-- Added id="Email" -->
+            <input type="email" id="Email" name="Email" required class="text" placeholder="Correo electrónico"/>
+            <br>
+            <!-- Added id="Contrasena" -->
+            <input type="password" id="Contrasena" name="Contrasena" required class="text" placeholder="Contraseña"/>
+            <br>
+            <br>
+            <input type="submit" value="Iniciar sesión" class="btn">
+        </form>
+    </div>
+    <br>
+    <br>
+    <div class="sign">
+        <div class="cuenta">¿No tienes cuenta?</div>
+        <div class="reg"><a href="registro.html">Regístrate</a></div>
+    </div>
+</div>
+<img src="css/imgcss/hojas2.png" alt="li">
+<!-- Moved script to end of body -->
+<script src="js/script2.js"></script>
+
+</body>
+</html>
