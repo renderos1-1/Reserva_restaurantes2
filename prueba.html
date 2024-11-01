@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Notificaciones</title>
+    <style>
+        /* Estilos para el icono de campana y el contador */
+        .notification-icon {
+            position: relative;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .notification-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: red;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 5px;
+            font-size: 12px;
+        }
+
+        /* Estilos para el popup de notificaciones */
+        .notifications-popup {
+            display: none;
+            position: absolute;
+            top: 30px;
+            right: 0;
+            width: 250px;
+            background-color: white;
+            border: 1px solid #ccc;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            max-height: 300px;
+            overflow-y: auto;
+            border-radius: 5px;
+            padding: 10px;
+        }
+
+        .notification-item {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div style="position: relative;">
+        <!-- Icono de notificación -->
+        <div class="notification-icon" onclick="toggleNotifications()">
+            🔔
+            <span class="notification-count" id="notificationCount">0</span>
+        </div>
+
+        <!-- Popup de notificaciones -->
+        <div class="notifications-popup" id="notificationsPopup">
+            <h4>Notificaciones</h4>
+            <div id="notificationsList"></div>
+        </div>
+    </div>
+
+    <script>
+        let notificationCount = 0;
+        const notifications = [];
+
+        // Función para agregar una nueva notificación
+        function addNotification() {
+            notificationCount++;
+            const notificationMessage = `Notificación #${notificationCount} - ${new Date().toLocaleTimeString()}`;
+            notifications.push(notificationMessage);
+            document.getElementById("notificationCount").innerText = notificationCount;
+            renderNotifications();
+        }
+
+        // Función para renderizar las notificaciones en el popup
+        function renderNotifications() {
+            const notificationsList = document.getElementById("notificationsList");
+            notificationsList.innerHTML = notifications.map(notification =>
+                `<div class="notification-item">${notification}</div>`
+            ).join('');
+        }
+
+        // Función para alternar el popup de notificaciones
+        function toggleNotifications() {
+            const popup = document.getElementById("notificationsPopup");
+            popup.style.display = popup.style.display === "block" ? "none" : "block";
+
+            // Reinicia el contador cuando se abren las notificaciones
+            if (popup.style.display === "block") {
+                notificationCount = 0;
+                document.getElementById("notificationCount").innerText = notificationCount;
+            }
+        }
+        // Configura un intervalo para agregar notificaciones cada 15 minutos (simulado a 5 segundos aquí)
+        setInterval(addNotification, 5000); // Cambia a 900000 para 15 minutos
+    </script>
+</body>
+
+</html>
