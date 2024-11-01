@@ -87,8 +87,8 @@
     <div class="logo">Parrilladas</div>
     <nav>
       <ul>
-        <li><a href="reserva.html">Nueva Reserva</a></li>
-        <li><a href="historial.html">Historial</a></li>
+        <li><a href="/reserva">Nueva Reserva</a></li>
+        <li><a href="/historial">Historial</a></li>
         <li><a href="#" id="logoutBtn">Cerrar sesión</a></li>
       </ul>
     </nav>
@@ -138,38 +138,13 @@
 </footer>
 
 <script>
+
+
   document.addEventListener('DOMContentLoaded', async () => {
     const userId = localStorage.getItem('userId');
     if (!userId) {
       window.location.href = '/index.html';
       return;
-    }
-
-    try {
-      // Fetch the latest reservation for this user
-      const response = await fetch(`/ultima-reserva/${userId}`);
-      if (!response.ok) {
-        throw new Error('Failed to fetch reservation details');
-      }
-      const reservationData = await response.json();
-
-      // Fetch user details
-      const userResponse = await fetch(`/cliente/${userId}`);
-      if (!userResponse.ok) {
-        throw new Error('Failed to fetch user details');
-      }
-      const userData = await userResponse.json();
-
-      // Update the DOM with reservation details
-      document.getElementById('customerName').textContent = userData.Nombre;
-      document.getElementById('customerEmail').textContent = userData.Email;
-      document.getElementById('reservationDate').textContent = new Date(reservationData.Fecha).toLocaleDateString();
-      document.getElementById('reservationTime').textContent = reservationData.HoraEntrada;
-      document.getElementById('guestCount').textContent = reservationData.NumPersonas;
-      document.getElementById('phoneNumber').textContent = reservationData.Telefono;
-    } catch (error) {
-      console.error('Error fetching reservation details:', error);
-      alert('Error al cargar los detalles de la reserva');
     }
 
     // Add logout functionality
@@ -178,6 +153,59 @@
       localStorage.removeItem('userId');
       window.location.href = '/index.html';
     });
+
+    try {
+      // Fetch the latest reservation for this user
+      const response = await fetch(`/ultima-reserva/${userId}`);
+      if (!response.ok) {
+        throw new Error('Error al obtener los detalles de la reserva');
+      }
+      const reservationData = await response.json();
+
+      if (!reservationData) {
+        throw new Error('No se encontraron detalles de la reserva');
+      }
+
+      // Fetch user details
+      const userResponse = await fetch(`/cliente/${userId}`);
+      if (!userResponse.ok) {
+        throw new Error('Error al obtener los detalles del usuario');
+      }
+      const userData = await userResponse.json();
+
+      if (!userData) {
+        throw new Error('No se encontraron detalles del usuario');
+      }
+
+      // Format the date
+      const fecha = new Date(reservationData.Fecha);
+      const fechaFormateada = fecha.toLocaleDateString('es-ES', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+
+      // Update the DOM with reservation details
+      document.getElementById('customerName').textContent = userData.Nombre || 'No disponible';
+      document.getElementById('customerEmail').textContent = userData.Email || 'No disponible';
+      document.getElementById('reservationDate').textContent = fechaFormateada;
+      document.getElementById('reservationTime').textContent = reservationData.HoraEntrada || 'No disponible';
+      document.getElementById('guestCount').textContent = reservationData.NumPersonas || 'No disponible';
+      document.getElementById('phoneNumber').textContent = reservationData.Telefono || 'No disponible';
+
+    } catch (error) {
+      console.error('Error:', error);
+      // Display error message on the page instead of alert
+      const container = document.querySelector('.reservation-details');
+      container.innerHTML = `
+            <div style="color: #721c24; background-color: #f8d7da; padding: 20px; border-radius: 5px; margin: 20px 0;">
+                <h3>Error al cargar los detalles</h3>
+                <p>${error.message}</p>
+                <p>Por favor, intente nuevamente o contacte con soporte.</p>
+            </div>
+        `;
+    }
   });
 </script>
 </body>

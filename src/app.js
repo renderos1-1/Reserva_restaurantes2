@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken';
+
 import express from 'express';
 import { pool } from './db.js';
 import { PORT, JWT_SECRET } from './config.js';
@@ -6,10 +6,20 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import nodemailer from 'nodemailer';
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// Email configuration
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: process.env.EMAIL_USER || 'axelrende123@gmail.com', // Your Gmail
+        pass: process.env.EMAIL_PASSWORD || 'cpir gmtn juac wxxm' // Your App Password
+    }
+});
 
 // Core middleware
 app.use(cors({
@@ -27,12 +37,125 @@ app.use('/img', express.static(path.join(__dirname, '../img')));
 app.use(express.static(path.join(__dirname, '../public')));
 app.use(express.static('public'));
 
+// Email sending function
+async function sendConfirmationEmail(reservationData, userData) {
+    const fecha = new Date(reservationData.Fecha).toLocaleDateString();
 
+    const mailOptions = {
+        from: '"Parrilladas Restaurant" <your-email@gmail.com>',
+        to: userData.Email,
+        subject: 'Confirmación de Reserva - Parrilladas Restaurant',
+        html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+                <h1 style="color: #4CAF50; text-align: center;">¡Reserva Confirmada!</h1>
+                
+                <div style="background-color: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                    <h2 style="color: #333;">Detalles de su reserva:</h2>
+                    
+                    <div style="margin: 15px 0;">
+                        <strong>Nombre:</strong> ${userData.Nombre}
+                    </div>
+                    
+                    <div style="margin: 15px 0;">
+                        <strong>Fecha:</strong> ${fecha}
+                    </div>
+                    
+                    <div style="margin: 15px 0;">
+                        <strong>Hora de entrada:</strong> ${reservationData.HoraEntrada}
+                    </div>
+                    
+                    <div style="margin: 15px 0;">
+                        <strong>Número de personas:</strong> ${reservationData.NumPersonas}
+                    </div>
+                    
+                    <div style="margin: 15px 0;">
+                        <strong>Teléfono:</strong> ${reservationData.Telefono}
+                    </div>
+                </div>
+                
+                <div style="background-color: #fff3cd; padding: 15px; border-radius: 8px; margin: 20px 0;">
+                    <p style="color: #856404; margin: 0;">
+                        <strong>Importante:</strong> Si necesita modificar o cancelar su reserva, 
+                        por favor contáctenos con al menos 2 horas de anticipación.
+                    </p>
+                </div>
+            </div>
+        `
+    };
 
-// Public routes
+    try {
+        await transporter.sendMail(mailOptions);
+        console.log('Confirmation email sent successfully');
+        return true;
+    } catch (error) {
+        console.error('Error sending confirmation email:', error);
+        return false;
+    }
+}
+
+//sendCancellation email function
+async function sendCancellationEmail(reservationData, userData) {
+    const emailContent = {
+        subject: 'Confirmación de Cancelación - Parrilladas Restaurant',
+        html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+                <h1 style="color: #dc3545; text-align: center;">Reserva Cancelada</h1>
+                
+                <div style="background-color: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                    <h2 style="color: #333;">Detalles de la reserva cancelada:</h2>
+                    
+                    <div style="margin: 15px 0;">
+                        <strong>Nombre:</strong> ${userData.Nombre}
+                    </div>
+                    
+                    <div style="margin: 15px 0;">
+                        <strong>Fecha:</strong> ${new Date(reservationData.Fecha).toLocaleDateString('es-ES', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        })}
+                    </div>
+                    
+                    <div style="margin: 15px 0;">
+                        <strong>Hora de entrada:</strong> ${reservationData.HoraEntrada}
+                    </div>
+                    
+                    <div style="margin: 15px 0;">
+                        <strong>Número de personas:</strong> ${reservationData.NumPersonas}
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 30px;">
+                    <p style="color: #666;">
+                        Si deseas hacer una nueva reserva, puedes hacerlo a través de nuestra página web.
+                    </p>
+                </div>
+            </div>
+        `
+    };
+
+    const mailOptions = {
+        from: '"Parrilladas Restaurant" <axelrende123@gmail.com>',
+        to: userData.Email,
+        subject: emailContent.subject,
+        html: emailContent.html
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+        console.log('Cancellation email sent successfully');
+        return true;
+    } catch (error) {
+        console.error('Error sending cancellation email:', error);
+        return false;
+    }
+}
+
+// Routes
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../public/index.html'));
 });
+
 
 app.post('/register', async (req, res) => {
     const { Nombre, Email, Contrasena } = req.body;
@@ -61,7 +184,7 @@ app.post('/login', async (req, res) => {
 
         res.status(200).json({
             message: 'Login successful',
-            userId: results[0].IdCliente,  // Send the user ID
+            userId: results[0].IdCliente,
             redirectUrl: '/reserva'
         });
     } catch (error) {
@@ -70,10 +193,67 @@ app.post('/login', async (req, res) => {
     }
 });
 
-
 app.get('/reserva', (req, res) => {
     res.sendFile(path.join(__dirname, '../reserva.html'));
 });
+
+app.post('/reservar', async (req, res) => {
+    const { IdCliente, Fecha, HoraEntrada, HoraSalida, NumPersonas, Telefono, IdEstado } = req.body;
+
+    try {
+        // Check capacity for the given date and time
+        const [existingReservations] = await pool.query(`
+            SELECT SUM(NumPersonas) as TotalPersonas
+            FROM reserva
+            WHERE Fecha = ? 
+            AND IdEstado != 3 
+            AND ((HoraEntrada <= ? AND HoraSalida >= ?) 
+                 OR (HoraEntrada <= ? AND HoraSalida >= ?))`,
+            [Fecha, HoraEntrada, HoraEntrada, HoraSalida, HoraSalida]
+        );
+
+        const currentCapacity = existingReservations[0].TotalPersonas || 0;
+        const totalCapacity = currentCapacity + parseInt(NumPersonas);
+
+        if (totalCapacity > 50) {  // Maximum restaurant capacity
+            return res.status(400).json({
+                error: 'No hay suficiente capacidad para esta fecha y hora.'
+            });
+        }
+
+        // Create the reservation
+        const [result] = await pool.query(`
+            INSERT INTO reserva 
+            (IdCliente, Fecha, HoraEntrada, HoraSalida, NumPersonas, Telefono, IdEstado)
+            VALUES (?, ?, ?, ?, ?, ?, ?)`,
+            [IdCliente, Fecha, HoraEntrada, HoraSalida, NumPersonas, Telefono, IdEstado]
+        );
+
+        // Fetch user data for email
+        const [userData] = await pool.query(
+            'SELECT Nombre, Email FROM cliente WHERE IdCliente = ?',
+            [IdCliente]
+        );
+
+        if (userData.length > 0) {
+            // Send confirmation email
+            await sendConfirmationEmail(
+                { Fecha, HoraEntrada, NumPersonas, Telefono },
+                userData[0]
+            );
+        }
+
+        res.status(201).json({
+            message: 'Reserva creada con éxito.',
+            reservationId: result.insertId
+        });
+
+    } catch (error) {
+        console.error('Error creating reservation:', error);
+        res.status(500).json({ error: 'Error al crear la reserva.' });
+    }
+});
+
 app.get('/consultar', async (req, res) => {
     try {
         const result = await pool.query(`
@@ -128,6 +308,7 @@ app.get('/reservas-cliente/:idCliente', async (req, res) => {
             FROM reserva r
             JOIN estado e ON r.IdEstado = e.IdEstado
             WHERE r.IdCliente = ?
+            ORDER BY r.Fecha DESC, r.HoraEntrada DESC
         `, [idCliente]);
 
         if (result.length === 0) {
@@ -158,67 +339,27 @@ app.get('/cliente/:userId', async (req, res) => {
     }
 });
 
-app.post('/reservar', async (req, res) => {
-    const { IdCliente, Fecha, HoraEntrada, HoraSalida, NumPersonas, Telefono, IdEstado } = req.body;
-
-    try {
-        // Check total capacity for the given date and time
-        const [existingReservations] = await pool.query(`
-            SELECT SUM(NumPersonas) as TotalPersonas
-            FROM reserva
-            WHERE Fecha = ? 
-            AND IdEstado != 3 
-            AND ((HoraEntrada <= ? AND HoraSalida >= ?) 
-                 OR (HoraEntrada <= ? AND HoraSalida >= ?))`,
-            [Fecha, HoraEntrada, HoraEntrada, HoraSalida, HoraSalida]
-        );
-
-        const totalPersonas = (existingReservations[0].TotalPersonas || 0) + NumPersonas;
-        if (totalPersonas > 50) {  // Assuming restaurant capacity is 50
-            return res.status(400).json({
-                error: 'No hay suficiente capacidad para esta fecha y hora.'
-            });
-        }
-
-        // Proceed with insertion if capacity is available
-        const query = `
-            INSERT INTO reserva 
-            (IdCliente, Fecha, HoraEntrada, HoraSalida, NumPersonas, Telefono, IdEstado)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-        `;
-
-        const [result] = await pool.query(query, [
-            IdCliente, Fecha, HoraEntrada, HoraSalida, NumPersonas, Telefono, IdEstado
-        ]);
-
-        res.status(201).json({
-            message: 'Reserva creada con éxito.',
-            reservationId: result.insertId
-        });
-    } catch (error) {
-        console.error('Error creating reservation:', error);
-        res.status(500).json({ error: 'Error al crear la reserva.' });
-    }
-});
 
 app.get('/confirmacion.html', (req, res) => {
     res.sendFile(path.join(__dirname, '../public/confirmacion.html'));
 });
 
+app.get('/historial', (req, res) => {
+    res.sendFile(path.join(__dirname, '../public/historial.html'));
+});
+
 app.get('/ultima-reserva/:userId', async (req, res) => {
     try {
         const userId = req.params.userId;
-
-        // Adjust the query according to your database schema
-        const query = `
-            SELECT * FROM reserva 
-            WHERE IdCliente = ? 
-            ORDER BY id DESC 
+        // Modified query to include all necessary fields and join with cliente table
+        const [rows] = await pool.query(`
+            SELECT r.*, c.Nombre, c.Email
+            FROM reserva r
+            JOIN cliente c ON c.IdCliente = r.IdCliente
+            WHERE r.IdCliente = ?
+            ORDER BY r.id DESC
             LIMIT 1
-        `;
-
-        // If using mysql2
-        const [rows] = await pool.query(query, [userId]);
+        `, [userId]);
 
         if (rows && rows.length > 0) {
             res.json(rows[0]);
@@ -226,28 +367,60 @@ app.get('/ultima-reserva/:userId', async (req, res) => {
             res.status(404).json({ message: 'No se encontró la reserva' });
         }
     } catch (error) {
-        console.error('Error al obtener la última reserva:', error);
+        console.error('Error fetching last reservation:', error);
         res.status(500).json({ message: 'Error al obtener los detalles de la reserva' });
     }
 });
 
+
 app.patch('/reservas/:id', async (req, res) => {
-    const { estado, horaSalida } = req.body;
+    const { estado } = req.body;
     const { id } = req.params;
 
     try {
+        // First get the reservation details before updating
+        const [reservationDetails] = await pool.query(`
+            SELECT r.*, c.IdCliente, c.Nombre, c.Email 
+            FROM reserva r
+            JOIN cliente c ON r.IdCliente = c.IdCliente
+            WHERE r.id = ?
+        `, [id]);
+
+        if (reservationDetails.length === 0) {
+            return res.status(404).send('Reserva no encontrada');
+        }
+
+        // Update the reservation status
         const query = `
             UPDATE reserva 
-            SET IdEstado = (SELECT IdEstado FROM estado WHERE Nombre = ?),
-                HoraSalida = ?
+            SET IdEstado = (SELECT IdEstado FROM estado WHERE Nombre = ?)
             WHERE id = ?`;
 
-        const result = await pool.query(query, [estado, horaSalida || null, id]);
+        const result = await pool.query(query, [estado, id]);
+
         if (result.affectedRows === 0) {
             return res.status(404).send('Reserva no encontrada');
         }
+
+        // If the status is being changed to 'Cancelada', send cancellation email
+        if (estado === 'Cancelada') {
+            try {
+                await sendCancellationEmail(
+                    reservationDetails[0],
+                    {
+                        Nombre: reservationDetails[0].Nombre,
+                        Email: reservationDetails[0].Email
+                    }
+                );
+            } catch (emailError) {
+                console.error('Error sending cancellation email:', emailError);
+                // Continue with the response even if email fails
+            }
+        }
+
         res.send('Reserva actualizada correctamente');
     } catch (error) {
+        console.error('Error updating reservation:', error);
         res.status(500).send('Error del servidor');
     }
 });

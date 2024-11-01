@@ -69,7 +69,7 @@ nav .bell img:hover {
 
 /* Hero Section */
 .hero{
-    background-image: linear-gradient(to left, rgba(0,0,0,0.5), rgba(0, 0, 0, 0.6)), url('../img/fondo_reserva_tu_mesa.jpg');
+    background-image: linear-gradient(to left, rgba(0,0,0,0.5), rgba(0, 0, 0, 0.6)), url('../../img/hero.jpg');
     background-repeat: no-repeat;
     background-position: center center;
     background-size: cover;
@@ -343,6 +343,194 @@ footer {
     font-size: 14px;
 }
 
+.notification-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.notification {
+    background-color: white;
+    border-left: 4px solid #4CAF50;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    border-radius: 4px;
+    padding: 16px 24px;
+    margin-bottom: 10px;
+    min-width: 300px;
+    max-width: 450px;
+    display: flex;
+    align-items: center;
+    transform: translateX(120%);
+    animation: slideIn 0.5s forwards;
+    position: relative;
+}
+
+.notification.exiting {
+    animation: slideOut 0.5s forwards;
+}
+
+.notification-icon {
+    margin-right: 12px;
+    color: #4CAF50;
+    flex-shrink: 0;
+}
+
+.notification-content {
+    flex-grow: 1;
+}
+
+.notification-title {
+    font-weight: bold;
+    margin-bottom: 4px;
+    color: #333;
+}
+
+.notification-message {
+    color: #666;
+    font-size: 0.9em;
+    margin: 0;
+}
+
+.notification-close {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: none;
+    border: none;
+    color: #999;
+    cursor: pointer;
+    padding: 4px;
+    font-size: 18px;
+    line-height: 1;
+}
+
+.notification-close:hover {
+    color: #333;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(120%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(120%);
+    }
+}
+
+/* Additional styles for different notification types */
+.notification.warning {
+    border-left-color: #ffc107;
+}
+
+.notification.warning .notification-icon {
+    color: #ffc107;
+}
+
+.notification.urgent {
+    border-left-color: #dc3545;
+}
+
+.notification.urgent .notification-icon {
+    color: #dc3545;
+}
+
+.reminder-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    z-index: 1100;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    animation: popIn 0.5s ease-out;
+}
+
+.reminder-popup-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1090;
+}
+
+.reminder-title {
+    color: #4CAF50;
+    margin-bottom: 15px;
+    font-size: 1.5em;
+}
+
+.reminder-content {
+    margin-bottom: 20px;
+    color: #333;
+    line-height: 1.5;
+}
+
+.reminder-time {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #2196F3;
+    margin: 10px 0;
+}
+
+.reminder-button {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background 0.3s;
+}
+
+.reminder-button:hover {
+    background: #45a049;
+}
+
+@keyframes popIn {
+    0% {
+        transform: translate(-50%, -60%);
+        opacity: 0;
+    }
+    100% {
+        transform: translate(-50%, -50%);
+        opacity: 1;
+    }
+}
+
+/* Bell animation for the reminder */
+.reminder-bell {
+    font-size: 2em;
+    margin-bottom: 15px;
+    animation: ring 1s ease-out;
+    display: inline-block;
+}
+
+@keyframes ring {
+    0% { transform: rotate(0); }
+    20% { transform: rotate(15deg); }
+    40% { transform: rotate(-15deg); }
+    60% { transform: rotate(10deg); }
+    80% { transform: rotate(-10deg); }
+    100% { transform: rotate(0); }
+}
 
 /* Responsive */
 @media (max-width: 768px) {
