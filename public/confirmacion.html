@@ -1,0 +1,212 @@
+<!-- confirmacion.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Confirmación de Reserva - Restaurante Elegante</title>
+  <link rel="stylesheet" href="/css/reserva.css">
+  <style>
+    .confirmation-container {
+      text-align: center;
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 30px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .checkmark {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background-color: #4CAF50;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+    }
+
+    .checkmark svg {
+      width: 60px;
+      height: 60px;
+      fill: none;
+      stroke: white;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .confirmation-title {
+      color: #4CAF50;
+      font-size: 24px;
+      margin-bottom: 30px;
+    }
+
+    .reservation-details {
+      text-align: left;
+      padding: 20px;
+      background: #f9f9f9;
+      border-radius: 8px;
+      margin-top: 20px;
+    }
+
+    .detail-item {
+      margin: 10px 0;
+      display: flex;
+      justify-content: space-between;
+      padding: 5px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .detail-label {
+      font-weight: bold;
+      color: #666;
+    }
+
+    .back-button {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+
+    .back-button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div class="navbar">
+    <div class="logo">Parrilladas</div>
+    <nav>
+      <ul>
+        <li><a href="/reserva">Nueva Reserva</a></li>
+        <li><a href="/historial">Historial</a></li>
+        <li><a href="#" id="logoutBtn">Cerrar sesión</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<div class="confirmation-container">
+  <div class="checkmark">
+    <svg viewBox="0 0 24 24">
+      <path d="M4 12l6 6L20 6"></path>
+    </svg>
+  </div>
+  <h1 class="confirmation-title">¡Reservación Confirmada!</h1>
+
+  <div class="reservation-details">
+    <div class="detail-item">
+      <span class="detail-label">Nombre:</span>
+      <span id="customerName">Cargando...</span>
+    </div>
+    <div class="detail-item">
+      <span class="detail-label">Email:</span>
+      <span id="customerEmail">Cargando...</span>
+    </div>
+    <div class="detail-item">
+      <span class="detail-label">Fecha:</span>
+      <span id="reservationDate">Cargando...</span>
+    </div>
+    <div class="detail-item">
+      <span class="detail-label">Hora de entrada:</span>
+      <span id="reservationTime">Cargando...</span>
+    </div>
+    <div class="detail-item">
+      <span class="detail-label">Número de personas:</span>
+      <span id="guestCount">Cargando...</span>
+    </div>
+    <div class="detail-item">
+      <span class="detail-label">Teléfono:</span>
+      <span id="phoneNumber">Cargando...</span>
+    </div>
+  </div>
+
+  <a href="reserva.html" class="back-button">Volver a Reservas</a>
+</div>
+
+<footer>
+  <p>© 2024 - Todos los derechos reservados</p>
+</footer>
+
+<script>
+
+
+  document.addEventListener('DOMContentLoaded', async () => {
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+      window.location.href = '/index.html';
+      return;
+    }
+
+    // Add logout functionality
+    document.getElementById('logoutBtn').addEventListener('click', (e) => {
+      e.preventDefault();
+      localStorage.removeItem('userId');
+      window.location.href = '/index.html';
+    });
+
+    try {
+      // Fetch the latest reservation for this user
+      const response = await fetch(`/ultima-reserva/${userId}`);
+      if (!response.ok) {
+        throw new Error('Error al obtener los detalles de la reserva');
+      }
+      const reservationData = await response.json();
+
+      if (!reservationData) {
+        throw new Error('No se encontraron detalles de la reserva');
+      }
+
+      // Fetch user details
+      const userResponse = await fetch(`/cliente/${userId}`);
+      if (!userResponse.ok) {
+        throw new Error('Error al obtener los detalles del usuario');
+      }
+      const userData = await userResponse.json();
+
+      if (!userData) {
+        throw new Error('No se encontraron detalles del usuario');
+      }
+
+      // Format the date
+      const fecha = new Date(reservationData.Fecha);
+      const fechaFormateada = fecha.toLocaleDateString('es-ES', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+
+      // Update the DOM with reservation details
+      document.getElementById('customerName').textContent = userData.Nombre || 'No disponible';
+      document.getElementById('customerEmail').textContent = userData.Email || 'No disponible';
+      document.getElementById('reservationDate').textContent = fechaFormateada;
+      document.getElementById('reservationTime').textContent = reservationData.HoraEntrada || 'No disponible';
+      document.getElementById('guestCount').textContent = reservationData.NumPersonas || 'No disponible';
+      document.getElementById('phoneNumber').textContent = reservationData.Telefono || 'No disponible';
+
+    } catch (error) {
+      console.error('Error:', error);
+      // Display error message on the page instead of alert
+      const container = document.querySelector('.reservation-details');
+      container.innerHTML = `
+            <div style="color: #721c24; background-color: #f8d7da; padding: 20px; border-radius: 5px; margin: 20px 0;">
+                <h3>Error al cargar los detalles</h3>
+                <p>${error.message}</p>
+                <p>Por favor, intente nuevamente o contacte con soporte.</p>
+            </div>
+        `;
+    }
+  });
+</script>
+</body>
+</html>
